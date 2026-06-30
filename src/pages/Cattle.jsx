@@ -98,9 +98,8 @@ export default function Cattle() {
                 deliveryDate.setDate(deliveryDate.getDate() + 279);
                 newData.expectedDeliveryDate = deliveryDate.toISOString().split('T')[0];
             }
-        } else {
-            newData.expectedDeliveryDate = ""; // Clear if no longer pregnant
         }
+        // Removed the 'else' block that clears expectedDeliveryDate to preserve tracking
         setFormData(newData);
     };
 
@@ -108,11 +107,13 @@ export default function Cattle() {
     const handleInseminationChange = (date) => {
         let newData = { ...formData, inseminationDate: date };
 
-        if (formData.status && formData.status.includes("Pregnant")) {
-            const baseDate = date ? new Date(date) : new Date();
+        if (date) {
+            const baseDate = new Date(date);
             const deliveryDate = new Date(baseDate);
             deliveryDate.setDate(deliveryDate.getDate() + 279);
             newData.expectedDeliveryDate = deliveryDate.toISOString().split('T')[0];
+        } else {
+            newData.expectedDeliveryDate = "";
         }
         setFormData(newData);
     };
@@ -362,7 +363,7 @@ export default function Cattle() {
                                             {/* Expected Delivery */}
                                             <td className="p-4 align-top">
                                                 {(() => {
-                                                    const deliveryDate = cow.expectedDeliveryDate || (cow.inseminationDate && cow.status && (cow.status.includes('Pregnant') || cow.status.includes('Pregnant 1st')) ? (() => {
+                                                    const deliveryDate = cow.expectedDeliveryDate || (cow.inseminationDate ? (() => {
                                                         const date = new Date(cow.inseminationDate);
                                                         date.setDate(date.getDate() + 279); // Updated to 279 days
                                                         return date.toISOString().split('T')[0];
@@ -499,7 +500,7 @@ export default function Cattle() {
                                                 ) : <span className="text-gray-400 italic">No record</span>}
                                             </div>
                                             {/* Expected Delivery Highlight */}
-                                            {(cow.expectedDeliveryDate || (cow.inseminationDate && cow.status && (cow.status.includes('Pregnant') || cow.status.includes('Pregnant 1st')))) && (
+                                            {(cow.expectedDeliveryDate || cow.inseminationDate) && (
                                                 <div className={`text-sm font-bold mt-1 ${isDueSoon(cow.expectedDeliveryDate) ? "text-red-600" : "text-purple-700"}`}>
                                                     Expected: {cow.expectedDeliveryDate ? formatDate(cow.expectedDeliveryDate) : formatDate(new Date(new Date(cow.inseminationDate).setDate(new Date(cow.inseminationDate).getDate() + 279)).toISOString().split('T')[0])}
                                                 </div>
@@ -730,14 +731,14 @@ export default function Cattle() {
                                         <input type="text" className="w-full p-2 border rounded-lg" value={formData.fatherSemenCompany} onChange={(e) => setFormData({ ...formData, fatherSemenCompany: e.target.value })} />
                                     </div>
                                     {/* Conditionally Show Expected Delivery Date */}
-                                    {(formData.status || "").split(', ').some(s => s === "Pregnant" || s === "Pregnant 1st") && (
+                                    {(formData.expectedDeliveryDate || formData.inseminationDate) && (
                                         <div className="md:col-span-2 animate-fadeIn">
                                             <label className="block text-sm font-medium text-purple-700 mb-1">Expected Delivery (Auto 279d)</label>
                                             <div className="relative">
                                                 <input
                                                     type="date"
                                                     className="w-full p-2 border border-purple-200 bg-purple-50 rounded-lg text-purple-900 font-medium"
-                                                    value={formData.expectedDeliveryDate}
+                                                    value={formData.expectedDeliveryDate || ''}
                                                     readOnly
                                                 />
                                                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-purple-400 font-medium">Auto-Calculated</span>
