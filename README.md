@@ -9,7 +9,7 @@ A comprehensive, mobile-responsive web application designed to digitize and stre
 ### Livestock Management (Cattle)
 -   **Digital Herd Registry**: Track Cows, Bulls, Heifers, and Calves with unique Tag IDs.
 -   **Genealogy Tracking**: Link animals to their mothers for lineage tracking.
--   **Reproductive Cycle**: Auto-calculate "Expected Delivery Date" (275 days) based on insemination.
+-   **Reproductive Cycle**: Auto-calculate "Expected Delivery Date" (279 days) based on insemination.
 -   **Status Tracking**: Monitor statuses like Milking, Pregnant, Dry, Sick, etc.
 -   **Mobile Card View**: Responsive design switches to stacked cards on mobile for easy browsing.
 

@@ -159,7 +159,7 @@ export default function Health() {
     useEffect(() => {
         if (activeFormType === "Insemination" && formData.date) {
             const d = new Date(formData.date);
-            d.setDate(d.getDate() + 270);
+            d.setDate(d.getDate() + 279);
             setFormData(prev => ({ ...prev, expectedDeliveryDate: d.toISOString().split("T")[0] }));
         }
     }, [formData.date, activeFormType]);

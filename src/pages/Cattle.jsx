@@ -95,7 +95,7 @@ export default function Cattle() {
             if (!formData.expectedDeliveryDate) { // Only set if not already set or needing update
                 const baseDate = formData.inseminationDate ? new Date(formData.inseminationDate) : new Date();
                 const deliveryDate = new Date(baseDate);
-                deliveryDate.setDate(deliveryDate.getDate() + 270);
+                deliveryDate.setDate(deliveryDate.getDate() + 279);
                 newData.expectedDeliveryDate = deliveryDate.toISOString().split('T')[0];
             }
         } else {
@@ -111,7 +111,7 @@ export default function Cattle() {
         if (formData.status && formData.status.includes("Pregnant")) {
             const baseDate = date ? new Date(date) : new Date();
             const deliveryDate = new Date(baseDate);
-            deliveryDate.setDate(deliveryDate.getDate() + 270);
+            deliveryDate.setDate(deliveryDate.getDate() + 279);
             newData.expectedDeliveryDate = deliveryDate.toISOString().split('T')[0];
         }
         setFormData(newData);
@@ -364,7 +364,7 @@ export default function Cattle() {
                                                 {(() => {
                                                     const deliveryDate = cow.expectedDeliveryDate || (cow.inseminationDate && cow.status && (cow.status.includes('Pregnant') || cow.status.includes('Pregnant 1st')) ? (() => {
                                                         const date = new Date(cow.inseminationDate);
-                                                        date.setDate(date.getDate() + 275); // Updated to 275 days
+                                                        date.setDate(date.getDate() + 279); // Updated to 279 days
                                                         return date.toISOString().split('T')[0];
                                                     })() : null);
 
@@ -501,7 +501,7 @@ export default function Cattle() {
                                             {/* Expected Delivery Highlight */}
                                             {(cow.expectedDeliveryDate || (cow.inseminationDate && cow.status && (cow.status.includes('Pregnant') || cow.status.includes('Pregnant 1st')))) && (
                                                 <div className={`text-sm font-bold mt-1 ${isDueSoon(cow.expectedDeliveryDate) ? "text-red-600" : "text-purple-700"}`}>
-                                                    Expected: {cow.expectedDeliveryDate ? formatDate(cow.expectedDeliveryDate) : formatDate(new Date(new Date(cow.inseminationDate).setDate(new Date(cow.inseminationDate).getDate() + 275)).toISOString().split('T')[0])}
+                                                    Expected: {cow.expectedDeliveryDate ? formatDate(cow.expectedDeliveryDate) : formatDate(new Date(new Date(cow.inseminationDate).setDate(new Date(cow.inseminationDate).getDate() + 279)).toISOString().split('T')[0])}
                                                 </div>
                                             )}
                                         </div>
@@ -732,7 +732,7 @@ export default function Cattle() {
                                     {/* Conditionally Show Expected Delivery Date */}
                                     {(formData.status || "").split(', ').some(s => s === "Pregnant" || s === "Pregnant 1st") && (
                                         <div className="md:col-span-2 animate-fadeIn">
-                                            <label className="block text-sm font-medium text-purple-700 mb-1">Expected Delivery (Auto 275d)</label>
+                                            <label className="block text-sm font-medium text-purple-700 mb-1">Expected Delivery (Auto 279d)</label>
                                             <div className="relative">
                                                 <input
                                                     type="date"
