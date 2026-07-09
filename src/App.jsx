@@ -14,6 +14,8 @@ const Health = lazy(() => import("./pages/Health"));
 const Inventory = lazy(() => import("./pages/Inventory"));
 const HR = lazy(() => import("./pages/HR"));
 const Finance = lazy(() => import("./pages/Finance"));
+const Settings = lazy(() => import("./pages/Settings"));
+
 
 const LoadingFallback = () => (
   <div className="flex items-center justify-center p-8 text-gray-500">
@@ -33,7 +35,7 @@ function App() {
                 <Route
                   path="/"
                   element={
-                    <PrivateRoute>
+                    <PrivateRoute module="dashboard">
                       <Dashboard />
                     </PrivateRoute>
                   }
@@ -41,7 +43,7 @@ function App() {
                 <Route
                   path="/cattle"
                   element={
-                    <PrivateRoute>
+                    <PrivateRoute module="cattle">
                       <Cattle />
                     </PrivateRoute>
                   }
@@ -49,7 +51,7 @@ function App() {
                 <Route
                   path="/milk"
                   element={
-                    <PrivateRoute>
+                    <PrivateRoute module="milk">
                       <Milk />
                     </PrivateRoute>
                   }
@@ -57,7 +59,7 @@ function App() {
                 <Route
                   path="/health"
                   element={
-                    <PrivateRoute>
+                    <PrivateRoute module="health">
                       <Health />
                     </PrivateRoute>
                   }
@@ -65,7 +67,7 @@ function App() {
                 <Route
                   path="/inventory"
                   element={
-                    <PrivateRoute>
+                    <PrivateRoute module="inventory">
                       <Inventory />
                     </PrivateRoute>
                   }
@@ -73,7 +75,7 @@ function App() {
                 <Route
                   path="/hr"
                   element={
-                    <PrivateRoute>
+                    <PrivateRoute module="hr">
                       <HR />
                     </PrivateRoute>
                   }
@@ -81,11 +83,20 @@ function App() {
                 <Route
                   path="/finance"
                   element={
-                    <PrivateRoute>
+                    <PrivateRoute module="finance">
                       <Finance />
                     </PrivateRoute>
                   }
                 />
+                <Route
+                  path="/settings"
+                  element={
+                    <PrivateRoute module="admin">
+                      <Settings />
+                    </PrivateRoute>
+                  }
+                />
+
                 {/* Default redirect for unknown routes */}
                 <Route path="*" element={<Navigate to="/" />} />
               </Routes>

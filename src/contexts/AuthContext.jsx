@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { auth } from "../firebase"; // Only import auth for now
+import { auth, rtdb } from "../firebase"; 
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
+import { ref, get } from "firebase/database";
+
 
 const AuthContext = createContext();
 
@@ -28,19 +30,52 @@ export function AuthProvider({ children }) {
         return signOut(auth);
     }
 
-    // We will attempt to restore session, but nicely.
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
             console.log("Auth State Changed:", user ? user.uid : "No User");
             setCurrentUser(user);
+            if (user) {
+                try {
+                    const userRef = ref(rtdb, `users/${user.uid}`);
+                    const snapshot = await get(userRef);
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+                        if (data.role === 'disabled' || data.role === 'deleted') {
+                            await signOut(auth);
+                            setCurrentUser(null);
+                            setUserData(null);
+                        } else {
+                            setUserData(data);
+                        }
+                    } else {
+                        // If no record exists, only the legacy admin gets admin rights
+                        if (user.email === 'joggicottage@gmail.com') {
+                            setUserData({ role: 'admin' });
+                        } else {
+                            setUserData({ role: 'none' });
+                        }
+                    }
+                } catch (error) {
+                    console.error("Error fetching user profile:", error);
+                    if (user.email === 'joggicottage@gmail.com') {
+                        setUserData({ role: 'admin' });
+                    } else {
+                        setUserData({ role: 'none' });
+                    }
+                }
+            } else {
+                setUserData(null);
+            }
             setLoading(false);
         });
         return unsubscribe;
     }, []);
 
+
     const value = {
         currentUser,
-        userData, // Will be null for now, preventing DB crash
+        userData,
+
         login,
         logout,
     };

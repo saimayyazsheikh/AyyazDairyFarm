@@ -11,6 +11,8 @@ import {
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
+import usePermissions from "../hooks/usePermissions";
+
 
 export default function Milk() {
     const {
@@ -21,6 +23,8 @@ export default function Milk() {
     const { cattle } = useCattle();
     const { addToast } = useToast();
     const { confirm } = useConfirmation();
+    const { canEdit } = usePermissions('milk');
+
 
     const [activeTab, setActiveTab] = useState("daily"); // daily | monthly
     const [submitting, setSubmitting] = useState(false);
@@ -484,6 +488,7 @@ export default function Milk() {
                 {activeTab === "daily" && (
                     <>
                         {/* Collective Form */}
+                        {canEdit && (
                         <div className="lg:col-span-1 bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-fit">
                             <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
                                 <FileText className="mr-2 text-primary" /> Log Sales
@@ -547,10 +552,11 @@ export default function Milk() {
                                 </button>
                             </form>
                         </div>
+                        )}
 
 
                         {/* Recent Sales Table */}
-                        <div className="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <div className={`${canEdit ? 'lg:col-span-2' : 'lg:col-span-3'} bg-white p-6 rounded-xl shadow-sm border border-gray-100`}>
                             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                                 <h2 className="text-xl font-bold text-gray-800">Recent Sales</h2>
                                 <div className="flex gap-2">
@@ -610,7 +616,7 @@ export default function Milk() {
                                                                 <span key={r.id} className="pl-2 pr-1 py-0.5 bg-blue-50 text-blue-700 rounded text-xs border border-blue-100 flex items-center">
                                                                     <span className="font-semibold mr-1">{r.vendorName}</span>
                                                                     <span className="text-blue-500 mr-2">({parseFloat(r.quantity).toFixed(1)} L)</span>
-                                                                    <button onClick={() => handleDeleteRecord(r.id)} className="text-red-400 hover:text-red-600 p-0.5 rounded-full hover:bg-white"><Trash2 size={10} /></button>
+                                                                    {canEdit && <button onClick={() => handleDeleteRecord(r.id)} className="text-red-400 hover:text-red-600 p-0.5 rounded-full hover:bg-white"><Trash2 size={10} /></button>}
                                                                 </span>
                                                             ))}
                                                         </div>
@@ -645,9 +651,9 @@ export default function Milk() {
                                                             <span className="font-semibold text-sm text-gray-800">{r.vendorName}</span>
                                                             <span className="text-xs text-gray-500">{parseFloat(r.quantity).toFixed(1)} L @ Rs {r.pricePerLiter}</span>
                                                         </div>
-                                                        <button onClick={() => handleDeleteRecord(r.id)} className="p-1.5 bg-white text-red-500 rounded border hover:bg-red-50">
+                                                        {canEdit && <button onClick={() => handleDeleteRecord(r.id)} className="p-1.5 bg-white text-red-500 rounded border hover:bg-red-50">
                                                             <Trash2 size={14} />
-                                                        </button>
+                                                        </button>}
                                                     </div>
                                                 ))}
                                             </div>
@@ -663,6 +669,7 @@ export default function Milk() {
                 {activeTab === "monthly" && (
                     <>
                         {/* Keeping existing Monthly View Logic */}
+                        {canEdit && (
                         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-fit">
                             <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
                                 <Calendar className="mr-2 text-purple-600" /> Monthly Log
@@ -712,9 +719,10 @@ export default function Milk() {
                                 </button>
                             </form>
                         </div>
+                        )}
 
                         {/* History Table */}
-                        <div className="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <div className={`${canEdit ? 'lg:col-span-2' : 'lg:col-span-3'} bg-white p-6 rounded-xl shadow-sm border border-gray-100`}>
                             <div className="flex justify-between items-center mb-6">
                                 <h2 className="text-xl font-bold text-gray-800">Performance Records</h2>
                                 <div className="flex gap-2">
@@ -735,7 +743,7 @@ export default function Milk() {
                                             <th className="p-3 font-semibold text-gray-600">Animal</th>
                                             <th className="p-3 font-semibold text-gray-600">Yield Breakdown</th>
                                             {/* Removed Quality Stats column */}
-                                            <th className="p-3 font-semibold text-gray-600">Actions</th>
+                                            {canEdit && <th className="p-3 font-semibold text-gray-600">Actions</th>}
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-100">
@@ -757,6 +765,7 @@ export default function Milk() {
                                                                 <span className="bg-indigo-100 text-indigo-700 px-2 py-1 rounded text-xs">N: {log.nightYield || 0}</span>
                                                             </div>
                                                         </td>
+                                                        {canEdit && (
                                                         <td className="p-3">
                                                             <div className="flex gap-1">
                                                                 <button onClick={() => handleEditPerformanceLog(log)} className="text-blue-500 hover:bg-blue-50 p-1 rounded">
@@ -767,6 +776,7 @@ export default function Milk() {
                                                                 </button>
                                                             </div>
                                                         </td>
+                                                        )}
                                                     </tr>
                                                 ))
                                         )}
@@ -792,6 +802,7 @@ export default function Milk() {
                                                             {new Date(log.date + "-01").toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}
                                                         </span>
                                                     </div>
+                                                    {canEdit && (
                                                     <div className="flex gap-1">
                                                         <button onClick={() => handleEditPerformanceLog(log)} className="p-1.5 bg-blue-50 text-blue-600 rounded">
                                                             <FileText size={16} />
@@ -800,6 +811,7 @@ export default function Milk() {
                                                             <Trash2 size={16} />
                                                         </button>
                                                     </div>
+                                                    )}
                                                 </div>
 
                                                 <div className="grid grid-cols-3 gap-2 mt-2">

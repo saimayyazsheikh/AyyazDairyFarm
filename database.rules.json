@@ -1,14 +1,16 @@
 {
     "rules": {
         "users": {
+            ".read": "auth != null && (!root.child('users').child(auth.uid).child('role').exists() || root.child('users').child(auth.uid).child('role').val() === 'admin')",
+            ".write": "auth != null && (!root.child('users').child(auth.uid).child('role').exists() || root.child('users').child(auth.uid).child('role').val() === 'admin')",
             "$uid": {
                 ".read": "$uid === auth.uid",
                 ".write": "$uid === auth.uid"
             }
         },
         "cattle": {
-            ".read": "auth != null",
-            ".write": "auth != null",
+            ".read": "auth != null && (!root.child('users').child(auth.uid).child('role').exists() || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('permissions').child('cattle').val() === 'view' || root.child('users').child(auth.uid).child('permissions').child('cattle').val() === 'edit')",
+            ".write": "auth != null && (!root.child('users').child(auth.uid).child('role').exists() || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('permissions').child('cattle').val() === 'edit')",
             ".indexOn": [
                 "tagId",
                 "status",
@@ -82,8 +84,8 @@
             }
         },
         "production_logs": {
-            ".read": "auth != null",
-            ".write": "auth != null",
+            ".read": "auth != null && (!root.child('users').child(auth.uid).child('role').exists() || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('permissions').child('milk').val() === 'view' || root.child('users').child(auth.uid).child('permissions').child('milk').val() === 'edit')",
+            ".write": "auth != null && (!root.child('users').child(auth.uid).child('role').exists() || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('permissions').child('milk').val() === 'edit')",
             ".indexOn": [
                 "date",
                 "cowTag",
@@ -127,8 +129,8 @@
             }
         },
         "health_records": {
-            ".read": "auth != null",
-            ".write": "auth != null",
+            ".read": "auth != null && (!root.child('users').child(auth.uid).child('role').exists() || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('permissions').child('health').val() === 'view' || root.child('users').child(auth.uid).child('permissions').child('health').val() === 'edit')",
+            ".write": "auth != null && (!root.child('users').child(auth.uid).child('role').exists() || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('permissions').child('health').val() === 'edit')",
             ".indexOn": [
                 "date",
                 "cowTag",
@@ -196,8 +198,8 @@
             }
         },
         "inventory": {
-            ".read": "auth != null",
-            ".write": "auth != null",
+            ".read": "auth != null && (!root.child('users').child(auth.uid).child('role').exists() || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('permissions').child('inventory').val() === 'view' || root.child('users').child(auth.uid).child('permissions').child('inventory').val() === 'edit')",
+            ".write": "auth != null && (!root.child('users').child(auth.uid).child('role').exists() || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('permissions').child('inventory').val() === 'edit')",
             ".indexOn": [
                 "name",
                 "quantity",
@@ -247,8 +249,8 @@
             }
         },
         "inventory_usage": {
-            ".read": "auth != null",
-            ".write": "auth != null",
+            ".read": "auth != null && (!root.child('users').child(auth.uid).child('role').exists() || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('permissions').child('inventory').val() === 'view' || root.child('users').child(auth.uid).child('permissions').child('inventory').val() === 'edit')",
+            ".write": "auth != null && (!root.child('users').child(auth.uid).child('role').exists() || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('permissions').child('inventory').val() === 'edit')",
             ".indexOn": [
                 "itemId",
                 "date"
@@ -282,8 +284,8 @@
             }
         },
         "inventory_templates": {
-            ".read": "auth != null",
-            ".write": "auth != null",
+            ".read": "auth != null && (!root.child('users').child(auth.uid).child('role').exists() || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('permissions').child('inventory').val() === 'view' || root.child('users').child(auth.uid).child('permissions').child('inventory').val() === 'edit')",
+            ".write": "auth != null && (!root.child('users').child(auth.uid).child('role').exists() || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('permissions').child('inventory').val() === 'edit')",
             "$templateId": {
                 ".validate": "newData.hasChildren(['itemId', 'quantity'])",
                 "itemId": {
@@ -316,8 +318,8 @@
             }
         },
         "payroll_runs": {
-            ".read": "auth != null",
-            ".write": "auth != null",
+            ".read": "auth != null && (!root.child('users').child(auth.uid).child('role').exists() || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('permissions').child('hr').val() === 'view' || root.child('users').child(auth.uid).child('permissions').child('hr').val() === 'edit')",
+            ".write": "auth != null && (!root.child('users').child(auth.uid).child('role').exists() || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('permissions').child('hr').val() === 'edit')",
             "$month": {
                 "$empId": {
                     ".validate": "newData.hasChildren(['amount', 'date'])",
@@ -337,8 +339,8 @@
             }
         },
         "expenses": {
-            ".read": "auth != null",
-            ".write": "auth != null",
+            ".read": "auth != null && (!root.child('users').child(auth.uid).child('role').exists() || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('permissions').child('finance').val() === 'view' || root.child('users').child(auth.uid).child('permissions').child('finance').val() === 'edit' || root.child('users').child(auth.uid).child('permissions').child('health').val() === 'edit' || root.child('users').child(auth.uid).child('permissions').child('milk').val() === 'edit' || root.child('users').child(auth.uid).child('permissions').child('inventory').val() === 'edit' || root.child('users').child(auth.uid).child('permissions').child('hr').val() === 'edit')",
+            ".write": "auth != null && (!root.child('users').child(auth.uid).child('role').exists() || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('permissions').child('finance').val() === 'edit' || root.child('users').child(auth.uid).child('permissions').child('health').val() === 'edit' || root.child('users').child(auth.uid).child('permissions').child('milk').val() === 'edit' || root.child('users').child(auth.uid).child('permissions').child('inventory').val() === 'edit' || root.child('users').child(auth.uid).child('permissions').child('hr').val() === 'edit')",
             ".indexOn": [
                 "referenceId",
                 "date"
@@ -375,8 +377,8 @@
             }
         },
         "employees": {
-            ".read": "auth != null",
-            ".write": "auth != null",
+            ".read": "auth != null && (!root.child('users').child(auth.uid).child('role').exists() || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('permissions').child('hr').val() === 'view' || root.child('users').child(auth.uid).child('permissions').child('hr').val() === 'edit')",
+            ".write": "auth != null && (!root.child('users').child(auth.uid).child('role').exists() || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('permissions').child('hr').val() === 'edit')",
             ".indexOn": [
                 "name",
                 "role",
@@ -411,8 +413,8 @@
             }
         },
         "doctors": {
-            ".read": "auth != null",
-            ".write": "auth != null",
+            ".read": "auth != null && (!root.child('users').child(auth.uid).child('role').exists() || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('permissions').child('health').val() === 'view' || root.child('users').child(auth.uid).child('permissions').child('health').val() === 'edit')",
+            ".write": "auth != null && (!root.child('users').child(auth.uid).child('role').exists() || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('permissions').child('health').val() === 'edit')",
             ".indexOn": [
                 "name",
                 "specialization",
@@ -447,8 +449,8 @@
             }
         },
         "milk_records": {
-            ".read": "auth != null",
-            ".write": "auth != null",
+            ".read": "auth != null && (!root.child('users').child(auth.uid).child('role').exists() || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('permissions').child('milk').val() === 'view' || root.child('users').child(auth.uid).child('permissions').child('milk').val() === 'edit')",
+            ".write": "auth != null && (!root.child('users').child(auth.uid).child('role').exists() || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('permissions').child('milk').val() === 'edit')",
             ".indexOn": [
                 "date",
                 "vendorId",
@@ -495,8 +497,8 @@
             }
         },
         "cow_performance_logs": {
-            ".read": "auth != null",
-            ".write": "auth != null",
+            ".read": "auth != null && (!root.child('users').child(auth.uid).child('role').exists() || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('permissions').child('cattle').val() === 'view' || root.child('users').child(auth.uid).child('permissions').child('cattle').val() === 'edit')",
+            ".write": "auth != null && (!root.child('users').child(auth.uid).child('role').exists() || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('permissions').child('cattle').val() === 'edit')",
             ".indexOn": [
                 "date",
                 "cowId"
@@ -539,8 +541,8 @@
             }
         },
         "vendors": {
-            ".read": "auth != null",
-            ".write": "auth != null",
+            ".read": "auth != null && (!root.child('users').child(auth.uid).child('role').exists() || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('permissions').child('finance').val() === 'view' || root.child('users').child(auth.uid).child('permissions').child('finance').val() === 'edit')",
+            ".write": "auth != null && (!root.child('users').child(auth.uid).child('role').exists() || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('permissions').child('finance').val() === 'edit')",
             ".indexOn": [
                 "name"
             ],

@@ -4,12 +4,16 @@ import { useCattle } from "../hooks/useCattle";
 import { Plus, Search, Edit2, Trash2, X, Filter, Calendar, Activity, MapPin, Syringe, Dna, AlertCircle, ChevronDown } from "lucide-react";
 import { useToast } from "../contexts/ToastContext";
 import { useConfirmation } from "../contexts/ConfirmationContext";
+import usePermissions from "../hooks/usePermissions";
+
 
 export default function Cattle() {
     const { cattle, loading, error, addCattle, updateCattle, deleteCattle } = useCattle();
     const { addToast } = useToast();
     const { confirm } = useConfirmation();
+    const { canEdit } = usePermissions('cattle');
     const [searchTerm, setSearchTerm] = useState("");
+
     const [filterType, setFilterType] = useState("All");
     const [filterStatus, setFilterStatus] = useState("All");
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -216,6 +220,7 @@ export default function Cattle() {
                     <h1 className="text-3xl font-bold text-gray-800">Livestock Management</h1>
                     <p className="text-gray-600">Track genealogy, health, and location</p>
                 </div>
+                {canEdit && (
                 <button
                     onClick={() => handleOpenModal()}
                     className="mt-4 md:mt-0 bg-primary text-white px-4 py-2 rounded-lg flex items-center hover:bg-green-600 transition"
@@ -223,7 +228,9 @@ export default function Cattle() {
                     <Plus size={20} className="mr-2" />
                     Add Animal
                 </button>
+                )}
             </div>
+
 
             {/* Search and Filters */}
             <div className="sticky top-0 z-20 bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -285,8 +292,9 @@ export default function Cattle() {
                                     <th className="p-4 font-semibold text-gray-600 text-sm">Metrics</th>
                                     <th className="p-4 font-semibold text-gray-600 text-sm">Vaccination</th>
                                     <th className="p-4 font-semibold text-gray-600 text-sm">Location</th>
-                                    <th className="p-4 font-semibold text-gray-600 text-sm text-right">Actions</th>
+                                    {canEdit && <th className="p-4 font-semibold text-gray-600 text-sm text-right">Actions</th>}
                                 </tr>
+
                             </thead>
                             <tbody className="divide-y divide-gray-100">
                                 {filteredCattle.length === 0 ? (
@@ -410,6 +418,7 @@ export default function Cattle() {
                                             </td>
 
                                             {/* Actions */}
+                                            {canEdit && (
                                             <td className="p-4 text-right align-top">
                                                 <div className="flex items-center justify-end gap-2">
                                                     <button onClick={() => handleOpenModal(cow)} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded transition">
@@ -420,7 +429,9 @@ export default function Cattle() {
                                                     </button>
                                                 </div>
                                             </td>
+                                            )}
                                         </tr>
+
                                     ))
                                 )}
                             </tbody>
@@ -545,6 +556,7 @@ export default function Cattle() {
                                     </div>
 
                                     {/* Actions */}
+                                    {canEdit && (
                                     <div className="flex gap-2.5">
                                         <button onClick={() => handleOpenModal(cow)} className="p-2.5 text-blue-600 bg-blue-50 rounded-lg border border-blue-100 hover:bg-blue-100 active:scale-95 transition-all shadow-sm">
                                             <Edit2 size={18} />
@@ -553,7 +565,9 @@ export default function Cattle() {
                                             <Trash2 size={18} />
                                         </button>
                                     </div>
+                                    )}
                                 </div>
+
 
                             </div>
                         ))}

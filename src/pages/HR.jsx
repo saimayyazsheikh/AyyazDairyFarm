@@ -3,12 +3,14 @@ import Layout from "../components/Layout";
 import { useHR } from "../hooks/useHR";
 import { useToast } from "../contexts/ToastContext";
 import { useConfirmation } from "../contexts/ConfirmationContext";
+import usePermissions from "../hooks/usePermissions";
 import { Users, UserPlus, Stethoscope, Phone, Briefcase, Trash2, Edit2, X, CheckCircle, Clock } from "lucide-react";
 
 export default function HR() {
     const { employees, doctors, loading, payrollStatus, doctorStats, addEmployee, updateEmployee, deleteEmployee, addDoctor, updateDoctor, deleteDoctor, runMonthlyPayroll } = useHR();
     const { addToast } = useToast();
     const { confirm } = useConfirmation();
+    const { canEdit } = usePermissions('hr');
 
     const [activeTab, setActiveTab] = useState("employees"); // employees | doctors
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -85,6 +87,7 @@ export default function HR() {
                     <h1 className="text-3xl font-bold text-gray-800">Human Resources</h1>
                     <p className="text-gray-600">Manage Farm Staff & Veterinary Partners</p>
                 </div>
+                {canEdit && (
                 <button
                     onClick={() => handleOpenModal()}
                     className="mt-4 md:mt-0 bg-primary text-white px-4 py-2 rounded-lg flex items-center hover:bg-green-600 transition"
@@ -92,6 +95,7 @@ export default function HR() {
                     <UserPlus size={20} className="mr-2" />
                     Add {activeTab === "employees" ? "Employee" : "Doctor"}
                 </button>
+                )}
             </div>
 
             {/* Tabs */}
@@ -127,7 +131,7 @@ export default function HR() {
                                         <th className="p-4 font-semibold text-gray-600">Salary</th>
                                         <th className="p-4 font-semibold text-gray-600">Payroll Status</th>
                                         <th className="p-4 font-semibold text-gray-600">Joined</th>
-                                        <th className="p-4 text-right">Actions</th>
+                                        {canEdit && <th className="p-4 text-right">Actions</th>}
                                     </tr>
                                 ) : (
                                     <tr>
@@ -137,7 +141,7 @@ export default function HR() {
                                         <th className="p-4 font-semibold text-gray-600">Total Paid</th>
                                         <th className="p-4 font-semibold text-gray-600">Clinic/Hospital</th>
                                         <th className="p-4 font-semibold text-gray-600">Schedule</th>
-                                        <th className="p-4 text-right">Actions</th>
+                                        {canEdit && <th className="p-4 text-right">Actions</th>}
                                     </tr>
                                 )}
                             </thead>
@@ -182,10 +186,12 @@ export default function HR() {
                                                 <td className="p-4 text-gray-500 text-sm">{item.visitSchedule}</td>
                                             </>
                                         )}
+                                        {canEdit && (
                                         <td className="p-4 text-right">
                                             <button onClick={() => handleOpenModal(item)} className="text-blue-500 hover:text-blue-700 mx-2"><Edit2 size={18} /></button>
                                             <button onClick={() => handleDelete(item.id)} className="text-red-500 hover:text-red-700 mx-2"><Trash2 size={18} /></button>
                                         </td>
+                                        )}
                                     </tr>
                                 ))}
                                 {(activeTab === "employees" ? employees : doctors).length === 0 && (
@@ -290,6 +296,7 @@ export default function HR() {
                                         </>
                                     )}
 
+                                    {canEdit && (
                                     <div className="flex justify-end gap-2 mt-1 border-t border-gray-50 pt-2">
                                         <button onClick={() => handleOpenModal(item)} className="p-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition">
                                             <Edit2 size={18} />
@@ -298,6 +305,7 @@ export default function HR() {
                                             <Trash2 size={18} />
                                         </button>
                                     </div>
+                                    )}
                                 </div>
                             ))
                         )}

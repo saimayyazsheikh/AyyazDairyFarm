@@ -32,5 +32,9 @@ try {
   console.error("Firebase Initialization Failed:", error);
 }
 
+export const createSecondaryApp = () => {
+  return initializeApp(firebaseConfig, "SecondaryApp");
+};
+
 export { auth, db, rtdb, storage };
 export default app;

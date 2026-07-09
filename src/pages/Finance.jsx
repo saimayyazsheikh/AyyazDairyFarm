@@ -21,11 +21,13 @@ import {
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
+import usePermissions from "../hooks/usePermissions";
 
 export default function Finance() {
     const { expenses, loading, addExpense, deleteExpense, updateExpense } = useFinance();
     const { addToast } = useToast();
     const { confirm } = useConfirmation();
+    const { canEdit } = usePermissions('finance');
 
     // Form State
     const [form, setForm] = useState({
@@ -277,6 +279,7 @@ export default function Finance() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
                 {/* Add Expense Form */}
+                {canEdit && (
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-fit">
                     <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
                         {editingId ? <Pencil className="mr-2 text-primary" /> : <Plus className="mr-2 text-primary" />}
@@ -346,9 +349,10 @@ export default function Finance() {
                         </div>
                     </form>
                 </div>
+                )}
 
                 {/* Expenses List */}
-                <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className={`${canEdit ? 'lg:col-span-2' : 'lg:col-span-3'} bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden`}>
                     <div className="p-4 border-b bg-gray-50 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                         <h3 className="font-bold text-gray-700 flex items-center">
                             <FileText className="mr-2 text-gray-500" size={20} /> Expense History
@@ -381,7 +385,7 @@ export default function Finance() {
                                             <th className="p-4 font-semibold text-gray-600">Category</th>
                                             <th className="p-4 font-semibold text-gray-600">Description</th>
                                             <th className="p-4 font-semibold text-gray-600">Amount</th>
-                                            <th className="p-4 font-semibold text-gray-600 text-right">Action</th>
+                                            {canEdit && <th className="p-4 font-semibold text-gray-600 text-right">Action</th>}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -411,6 +415,7 @@ export default function Finance() {
                                                     <td className="p-4 font-bold text-gray-800">
                                                         Rs {parseFloat(exp.amount).toLocaleString()}
                                                     </td>
+                                                    {canEdit && (
                                                     <td className="p-4 text-right">
                                                         {exp.type === 'Auto' ? (
                                                             <button
@@ -439,6 +444,7 @@ export default function Finance() {
                                                             </div>
                                                         )}
                                                     </td>
+                                                    )}
                                                 </tr>
                                             ))
                                         )}
@@ -468,7 +474,8 @@ export default function Finance() {
                                                         )}
                                                     </div>
                                                 </div>
-                                                {exp.type === 'Auto' ? (
+                                                {canEdit && (
+                                                exp.type === 'Auto' ? (
                                                     <button
                                                         onClick={handleAutoActionClick}
                                                         className="p-2 bg-gray-50 text-gray-400 rounded-lg transition"
@@ -490,6 +497,7 @@ export default function Finance() {
                                                             <Trash2 size={16} />
                                                         </button>
                                                     </div>
+                                                )
                                                 )}
                                             </div>
 

@@ -3,12 +3,14 @@ import Layout from "../components/Layout";
 import { useInventory } from "../hooks/useInventory";
 import { useToast } from "../contexts/ToastContext";
 import { useConfirmation } from "../contexts/ConfirmationContext";
+import usePermissions from "../hooks/usePermissions";
 import { Package, AlertTriangle, Plus, Edit2, Trash2, X, Truck, ClipboardList, History, Repeat, Clock } from "lucide-react";
 
 export default function Inventory() {
     const { items, usageLogs, templates, loading, addItem, updateItem, deleteItem, logUsage, deleteUsageLog, addTemplate, deleteTemplate, runRecurringTemplates, cleanUpDuplicates } = useInventory();
     const { addToast } = useToast();
     const { confirm } = useConfirmation();
+    const { canEdit } = usePermissions('inventory');
 
     // Modals state
     const [isItemModalOpen, setIsItemModalOpen] = useState(false);
@@ -286,6 +288,7 @@ export default function Inventory() {
                     <h1 className="text-3xl font-bold text-gray-800">Inventory & Feed</h1>
                     <p className="text-gray-600">Manage stocks and feed distribution</p>
                 </div>
+                {canEdit && (
                 <div className="flex gap-2 mt-4 md:mt-0">
                     <button
                         onClick={() => handleOpenItemModal()}
@@ -295,6 +298,7 @@ export default function Inventory() {
                         Add Item
                     </button>
                 </div>
+                )}
             </div>
 
             {/* Alerts Banner */}
@@ -316,6 +320,7 @@ export default function Inventory() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
                 {/* Log Usage Form */}
+                {canEdit && (
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-fit">
                     <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
                         <ClipboardList className="mr-2 text-primary" /> Log Daily Usage
@@ -383,9 +388,10 @@ export default function Inventory() {
                         </button>
                     </form>
                 </div>
+                )}
 
                 {/* Recent Logs Table */}
-                <div className="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-fit">
+                <div className={`${canEdit ? 'lg:col-span-2' : 'lg:col-span-3'} bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-fit`}>
                     <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
                         <History className="mr-2 text-gray-500" /> Recent Usage Activity
                     </h2>
@@ -397,8 +403,9 @@ export default function Inventory() {
                                     <th className="p-3 font-semibold text-gray-600">Item</th>
                                     <th className="p-3 font-semibold text-gray-600">Used</th>
                                     <th className="p-3 font-semibold text-gray-600">Note</th>
-                                    <th className="p-3 font-semibold text-gray-600 text-right">Action</th>
+                                    {canEdit && <th className="p-3 font-semibold text-gray-600 text-right">Action</th>}
                                 </tr>
+
                             </thead>
                             <tbody>
                                 {usageLogs.length === 0 ? (
@@ -412,6 +419,7 @@ export default function Inventory() {
                                             <td className="p-3 font-medium text-gray-800">{log.itemName}</td>
                                             <td className="p-3 font-bold text-orange-600">-{log.quantity} {log.unit}</td>
                                             <td className="p-3 text-sm text-gray-500">{log.note}</td>
+                                            {canEdit && (
                                             <td className="p-3 text-right">
                                                 <button
                                                     onClick={() => handleDeleteLogClick(log.id)}
@@ -420,7 +428,9 @@ export default function Inventory() {
                                                     <Trash2 size={16} />
                                                 </button>
                                             </td>
+                                            )}
                                         </tr>
+
                                     ))
                                 )}
                             </tbody>
@@ -442,12 +452,14 @@ export default function Inventory() {
                                                 <span className="text-xs font-bold text-gray-400 uppercase">{new Date(log.date).toLocaleDateString()}</span>
                                                 <h4 className="font-bold text-gray-800 text-md">{log.itemName}</h4>
                                             </div>
+                                            {canEdit && (
                                             <button
                                                 onClick={() => handleDeleteLogClick(log.id)}
                                                 className="p-2 bg-red-50 text-red-500 rounded-lg hover:bg-red-100"
                                             >
                                                 <Trash2 size={16} />
                                             </button>
+                                            )}
                                         </div>
 
                                         {/* Consumption Block */}
@@ -489,7 +501,7 @@ export default function Inventory() {
                                         <th className="p-4 font-semibold text-gray-600">Category</th>
                                         <th className="p-4 font-semibold text-gray-600">Stock Level</th>
                                         <th className="p-4 font-semibold text-gray-600">Est. Cost</th>
-                                        <th className="p-4 font-semibold text-gray-600 text-right">Actions</th>
+                                        {canEdit && <th className="p-4 font-semibold text-gray-600 text-right">Actions</th>}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -522,6 +534,7 @@ export default function Inventory() {
                                                         </div>
                                                     ) : '-'}
                                                 </td>
+                                                {canEdit && (
                                                 <td className="p-4 text-right">
                                                     <button onClick={() => handleOpenItemModal(item)} className="text-blue-500 hover:text-blue-700 mx-2">
                                                         <Edit2 size={18} />
@@ -530,6 +543,7 @@ export default function Inventory() {
                                                         <Trash2 size={18} />
                                                     </button>
                                                 </td>
+                                                )}
                                             </tr>
                                         );
                                     })}
@@ -585,6 +599,7 @@ export default function Inventory() {
                                         </div>
 
                                         {/* Action Footer */}
+                                        {canEdit && (
                                         <div className="flex justify-end gap-2 mt-1">
                                             <button onClick={() => handleOpenItemModal(item)} className="p-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition">
                                                 <Edit2 size={18} />
@@ -593,7 +608,9 @@ export default function Inventory() {
                                                 <Trash2 size={18} />
                                             </button>
                                         </div>
+                                        )}
                                     </div>
+
                                 );
                             })}
                         </div>

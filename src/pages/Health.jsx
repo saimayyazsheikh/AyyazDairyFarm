@@ -5,6 +5,7 @@ import { useCattle } from "../hooks/useCattle";
 import { useHR } from "../hooks/useHR";
 import { useToast } from "../contexts/ToastContext";
 import { useConfirmation } from "../contexts/ConfirmationContext";
+import usePermissions from "../hooks/usePermissions";
 import { Activity, Syringe, HeartPulse, Stethoscope, Plus, X, Search, Calendar, Edit, Trash2, Filter, Check, ChevronDown } from "lucide-react";
 
 // Helper Component for Multi-Select
@@ -114,6 +115,7 @@ export default function Health() {
     const { records, loading, addHealthRecord, deleteHealthRecord, updateHealthRecord } = useHealth();
     const { addToast } = useToast();
     const { confirm } = useConfirmation();
+    const { canEdit } = usePermissions('health');
     const { cattle } = useCattle();
     const { doctors } = useHR();
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -352,6 +354,7 @@ export default function Health() {
                     <h1 className="text-3xl font-bold text-gray-800">Medical & Health</h1>
                     <p className="text-gray-600">Veterinary care, treatments, and vaccinations</p>
                 </div>
+                {canEdit && (
                 <button
                     onClick={() => {
                         setEditingId(null);
@@ -363,7 +366,9 @@ export default function Health() {
                     <Plus size={20} className="mr-2" />
                     Record Medical Event
                 </button>
+                )}
             </div>
+
 
             {/* --- Filter Bar --- */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
@@ -440,8 +445,9 @@ export default function Health() {
                                     <th className="p-4 font-semibold">Doctor</th>
                                     <th className="p-4 font-semibold">Med Cost</th>
                                     <th className="p-4 font-semibold">Dr. Fee</th>
-                                    <th className="p-4 font-semibold text-center">Actions</th>
+                                    {canEdit && <th className="p-4 font-semibold text-center">Actions</th>}
                                 </tr>
+
                             </thead>
                             <tbody className="divide-y divide-gray-100">
                                 {filteredRecords.length === 0 ? (
@@ -521,6 +527,7 @@ export default function Health() {
                                                 <td className="p-4 font-mono font-medium text-gray-700">
                                                     {(parseFloat(record.doctorFee) || 0) > 0 ? `Rs ${parseInt(record.doctorFee).toLocaleString()}` : '-'}
                                                 </td>
+                                                {canEdit && (
                                                 <td className="p-4 text-center">
                                                     <div className="flex justify-center items-center gap-2">
                                                         <button
@@ -545,7 +552,9 @@ export default function Health() {
                                                         </button>
                                                     </div>
                                                 </td>
+                                                )}
                                             </tr>
+
                                         )
                                     })
                                 )}
@@ -631,6 +640,7 @@ export default function Health() {
                                     </div>
 
                                     {/* Block 5: Action Footer */}
+                                    {canEdit && (
                                     <div className="flex justify-end gap-2 mt-1 border-t border-gray-100 pt-3">
                                         <button
                                             onClick={() => handleEdit(record)}
@@ -654,7 +664,9 @@ export default function Health() {
                                             <Trash2 size={18} />
                                         </button>
                                     </div>
+                                    )}
                                 </div>
+
                             );
                         })}
                     </div>

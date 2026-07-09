@@ -1,23 +1,35 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Milk, Stethoscope, Package, Menu, X, LogOut, Beef, Users, CircleDollarSign, Banknote } from "lucide-react";
+import { LayoutDashboard, Milk, Stethoscope, Package, Menu, X, LogOut, Beef, Users, CircleDollarSign, Banknote, Settings as SettingsIcon } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
+
 import logo from "../assets/logo.png";
 
 export default function Sidebar() {
     const [isOpen, setIsOpen] = useState(false);
     const location = useLocation();
-    const { logout } = useAuth();
+    const { logout, userData } = useAuth();
 
     const navItems = [
-        { name: "Dashboard", icon: LayoutDashboard, path: "/" },
-        { name: "Cattle", icon: Beef, path: "/cattle" },
-        { name: "Milk Management", icon: Milk, path: "/milk" },
-        { name: "Health Records", icon: Stethoscope, path: "/health" },
-        { name: "Inventory", icon: Package, path: "/inventory" },
-        { name: "HR Management", icon: Users, path: "/hr" },
-        { name: "Expenses", icon: CircleDollarSign, path: "/finance" },
+        { name: "Dashboard", icon: LayoutDashboard, path: "/", module: "dashboard" },
+        { name: "Cattle", icon: Beef, path: "/cattle", module: "cattle" },
+        { name: "Milk Management", icon: Milk, path: "/milk", module: "milk" },
+        { name: "Health Records", icon: Stethoscope, path: "/health", module: "health" },
+        { name: "Inventory", icon: Package, path: "/inventory", module: "inventory" },
+        { name: "HR Management", icon: Users, path: "/hr", module: "hr" },
+        { name: "Expenses", icon: CircleDollarSign, path: "/finance", module: "finance" },
+        { name: "Settings", icon: SettingsIcon, path: "/settings", module: "admin" },
     ];
+
+    const isAdmin = !userData?.role || userData?.role === 'admin';
+    const perms = userData?.permissions || {};
+
+    const filteredNavItems = navItems.filter(item => {
+        if (isAdmin) return true;
+        if (!item.module) return true;
+        if (item.module === 'admin') return false;
+        return perms[item.module] === 'view' || perms[item.module] === 'edit';
+    });
 
     const handleLogout = async () => {
         try {
@@ -52,7 +64,7 @@ export default function Sidebar() {
 
                     <nav className="flex-1 overflow-y-auto py-4">
                         <ul className="space-y-2 px-2">
-                            {navItems.map((item) => {
+                            {filteredNavItems.map((item) => {
                                 const Icon = item.icon;
                                 const isActive = location.pathname === item.path;
                                 return (
