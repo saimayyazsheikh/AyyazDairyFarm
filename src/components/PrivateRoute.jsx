@@ -11,6 +11,10 @@ export default function PrivateRoute({ children, module }) {
         return <Navigate to="/login" />;
     }
 
+    if (userData === null) {
+        return <div className="flex items-center justify-center h-screen">Loading Permissions...</div>;
+    }
+
     if (module && !canView && !isAdmin) {
         if (userData?.permissions) {
             const allowedModules = Object.keys(userData.permissions).filter(k => userData.permissions[k] !== 'none');
